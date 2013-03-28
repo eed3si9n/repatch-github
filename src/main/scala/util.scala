@@ -1,7 +1,7 @@
 package repatch.github
 
 import dispatch._
-import net.liftweb.json._
+import org.json4s._
 import scala.util.control.Exception.allCatch
 
 /** Client is a function to wrap API operations */
@@ -46,7 +46,7 @@ object OAuth {
   def accessToken(user: String, pass: String, scopes: Seq[String] = Nil): Option[String] = {
     val tok = Http(authorizations.POST.as_!(user, pass) << """{"scopes":[%s]}""".format(
       scopes.mkString("\"","\",","\"")
-    ) > as.lift.Json) map { _ \ "token" match {
+    ) > as.json4s.Json) map { _ \ "token" match {
       case JString(tok) => Some(tok)
       case _ => None
     }}

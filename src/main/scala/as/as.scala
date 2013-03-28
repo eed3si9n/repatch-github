@@ -2,10 +2,13 @@ package repatch.as_github
 
 import dispatch._
 import repatch.github
-import net.liftweb.json.{JsonParser, JValue}
+import org.json4s.JValue
+import org.json4s.native.JsonMethods
 
 object Json extends (Res => JValue) {
-  def apply(r: Res) = (dispatch.as.String andThen JsonParser.parse)(r)
+  def apply(r: Res) = (dispatch.as.String andThen {
+    case s => JsonMethods.parse(s, false)
+  })(r)
 }
 
 object Repo extends (Res => github.Repo) {

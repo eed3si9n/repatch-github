@@ -1,7 +1,7 @@
 package repatch.github
 
 import dispatch._
-import net.liftweb.json._
+import org.json4s._
 
 /** represents a github repository from the request-side */
 case class Repos(user: String, name: String) extends Method {
@@ -69,7 +69,11 @@ object Repo extends Parsers {
   val open_issues_count = 'open_issues_count ? int
   val pushed_at   = 'pushed_at ? iso8601datetime
 
-  def owner(json: JValue): Option[Owner] = (for { JField("owner", v) <- json } yield Owner(v)).headOption
+  def owner(json: JValue): Option[Owner] =
+    (for {
+      JObject(o) <- json
+      JField("owner", v) <- o
+    } yield Owner(v)).headOption
   
   object Owner extends Parsers {
     val login       = 'login ? str
@@ -201,7 +205,11 @@ object GitRef extends Parsers {
       url = url(json).head,
       git_object = git_object(json).head)
   
-  def git_object(json: JValue): Seq[GitObject] = for { JField("object", v) <- json } yield GitObject(v)
+  def git_object(json: JValue): Seq[GitObject] =
+    for {
+      JObject(o) <- json
+      JField("object", v) <- o
+    } yield GitObject(v)
   
   object GitObject extends Parsers {
     def apply(json: JValue): GitObject =
@@ -241,12 +249,25 @@ object GitCommit extends Parsers {
       tree = tree(json).head,
       parents = parents(json))
   
-  def author(json: JValue): Seq[GitUser] = for { JField("author", v) <- json } yield GitUser(v)
-  def committer(json: JValue): Seq[GitUser] = for { JField("committer", v) <- json } yield GitUser(v)
-  def tree(json: JValue): Seq[GitShaUrl] = for { JField("tree", v) <- json } yield GitShaUrl(v)
+  def author(json: JValue): Seq[GitUser] =
+    for {
+      JObject(o) <- json
+      JField("author", v) <- o
+    } yield GitUser(v)
+  def committer(json: JValue): Seq[GitUser] =
+    for {
+      JObject(o) <- json
+      JField("committer", v) <- o
+    } yield GitUser(v)
+  def tree(json: JValue): Seq[GitShaUrl] =
+    for {
+      JObject(o) <- json
+      JField("tree", v) <- o
+    } yield GitShaUrl(v)
   def parents(json: JValue): Seq[GitShaUrl] =
     for {
-      JField("parents", JArray(a)) <- json
+      JObject(o) <- json
+      JField("parents", JArray(a)) <- o
       v <- a
     } yield GitShaUrl(v)
   

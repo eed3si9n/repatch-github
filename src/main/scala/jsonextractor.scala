@@ -1,7 +1,7 @@
 package repatch.github
 
 import dispatch._
-import net.liftweb.json._
+import org.json4s._
 
 /** Json Extractor, extracts a value of type T from the given JsValue. */
 trait Extract[T] {

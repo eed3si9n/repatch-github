@@ -3,6 +3,8 @@ import org.specs2.matcher._
 import dispatch._
 import repatch._
 import github._
+import scala.concurrent.Future
+import org.json4s.JValue
 
 class GithubSpec extends Specification { def is = sequential                  ^
   "This is a specification to check the github handler"                       ^
@@ -44,14 +46,14 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch
     // Returned json object can then be parsed using `as_github.Repo`,
     // which returns a Repo case class
-    val repos = Http(Client(Repos(user, repo)) > as_github.Repo)
+    val repos: Future[Repo] = Http(Client(Repos(user, repo)) > as_github.Repo)
 
     repos().full_name must_== "dispatch/dispatch"
   }
   
   def repos2: MatchResult[Any] = {
     // Returned json object can also be parsed field-by-field using an extractor
-    val json = Http(Client(Repos(user, repo)) > as_github.Json)
+    val json: Future[JValue] = Http(Client(Repos(user, repo)) > as_github.Json)
     val o = json map { js =>
       import Repo._
       owner(js)
@@ -64,7 +66,7 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch/git/refs
     // Returned json array can then be parsed using `as_github.GitRefs`,  
     // which returns a seqence of GitRef case classes
-    val refs = Http(Client(Repos(user, repo).git_refs) > as_github.GitRefs)
+    val refs: Future[Seq[GitRef]] = Http(Client(Repos(user, repo).git_refs) > as_github.GitRefs)
     
     val master = (refs() find {_.ref == "refs/heads/master"}).head
     master.git_object.`type` must_== "commit"
@@ -75,7 +77,7 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch/git/refs/heads/master
     // Returned json object can then be parsed using `as_github.GitRef`,
     // which returns a GitRef case class
-    val master = Http(Client(Repos(user, repo).git_refs.head("master")) > as_github.GitRef)
+    val master: Future[GitRef] = Http(Client(Repos(user, repo).git_refs.head("master")) > as_github.GitRef)
     master().git_object.`type` must_== "commit"
   }
   
@@ -84,13 +86,13 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch/git/commits/02d638afcd5b155a335db2e8262ffd852290c17c
     // Returned json object can then be parsed using `as_github.GitCommit`,
     // which returns a GitCommit case class
-    val commit = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.GitCommit)
+    val commit: Future[GitCommit] = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.GitCommit)
     commit().committer.name must_== "softprops"
   }
   
   def commit2: MatchResult[Any] = {
     // Returned json object can also be parsed field-by-field using an extractor
-    val json = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.Json)
+    val json: Future[JValue] = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.Json)
     val msg = json map { js =>
       import GitCommit._
       message(js)
@@ -100,10 +102,10 @@ class GithubSpec extends Specification { def is = sequential                  ^
   
   def commit3: MatchResult[Any] = {
     // this returns a GitRef case class
-    val master = Http(Client(Repos(user, repo).git_refs.head("master")) > as_github.GitRef)
+    val master: Future[GitRef] = Http(Client(Repos(user, repo).git_refs.head("master")) > as_github.GitRef)
     
     // this returns a GitCommit case class
-    val commit = Http(Client(Repos(user, repo).git_commit(master())) > as_github.GitCommit)
+    val commit: Future[GitCommit] = Http(Client(Repos(user, repo).git_commit(master())) > as_github.GitCommit)
     commit().sha must_== master().git_object.sha
   }
       
@@ -112,22 +114,22 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch/git/trees/563c7dcea4bbb71e49313e92c01337a0a4b7ce72
     // Returned json object can then be parsed using `as_github.GitTrees`,
     // which returns a seqence of GitTree case class
-    val trees = Http(Client(Repos(user, repo).git_trees(tree_sha)) > as_github.GitTrees)
+    val trees: Future[Seq[GitTree]] = Http(Client(Repos(user, repo).git_trees(tree_sha)) > as_github.GitTrees)
     trees() must have (_.path == ".gitignore")
   }
   
   def trees2: MatchResult[Any] = {
     // this returns a GitCommit case class
-    val commit = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.GitCommit)    
+    val commit: Future[GitCommit] = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.GitCommit)    
     
     // this returns a seqence of GitTree case class
-    val trees = Http(Client(Repos(user, repo).git_trees(commit())) > as_github.GitTrees)
+    val trees: Future[Seq[GitTree]] = Http(Client(Repos(user, repo).git_trees(commit())) > as_github.GitTrees)
     trees() must have (_.path == ".gitignore")
   }
   
   def recursive1: MatchResult[Any] = {
     // this returns a sequence of GitTree case class
-    val trees = Http(Client(Repos(user, repo).git_trees(tree_sha).recursive(10)) > as_github.GitTrees)
+    val trees: Future[Seq[GitTree]] = Http(Client(Repos(user, repo).git_trees(tree_sha).recursive(10)) > as_github.GitTrees)
     trees() must have (_.path == "twitter/src/main/scala/dispatch/Twitter.scala")
   }
   
@@ -136,7 +138,7 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch/git/blobs/fb4c8b459f05bcc5296d9c13a3f6757597786f1d
     // Returned json object can then be parsed using `as_github.GitBlob`,
     // which returns a GitBlob case class
-    val blob = Http(Client(Repos(user, repo).git_blob(blob_sha)) > as_github.GitBlob)
+    val blob: Future[GitBlob] = Http(Client(Repos(user, repo).git_blob(blob_sha)) > as_github.GitBlob)
     
     // `as_utf8` method makes the assumption that the contained content is encoded in UTF-8.
     (blob().as_utf8 startsWith ".classpath") must_== true
@@ -147,7 +149,7 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // https://api.github.com/repos/dispatch/dispatch/git/blobs/fb4c8b459f05bcc5296d9c13a3f6757597786f1d
     // with "application/vnd.github.raw" as http Accept header.
     // This returns raw bytes. You are responsible for figuring out the charset.
-    val raw = Http(Client(Repos(user, repo).git_blob(blob_sha).raw) > as.String)
+    val raw: Future[String] = Http(Client(Repos(user, repo).git_blob(blob_sha).raw) > as.String)
     
     (raw() startsWith ".classpath") must_== true
   }
