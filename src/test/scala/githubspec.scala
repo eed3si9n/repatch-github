@@ -47,8 +47,10 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // Returned json object can then be parsed using `as_github.Repo`,
     // which returns a Repo case class
     val repos: Future[Repo] = Http(Client(Repos(user, repo)) > as_github.Repo)
-
-    repos().full_name must_== "dispatch/dispatch"
+    
+    repos.completeOption must beSome.which { (x: Repo) =>
+      x.full_name == "dispatch/dispatch"
+    }.eventually
   }
   
   def repos2: MatchResult[Any] = {
@@ -58,7 +60,9 @@ class GithubSpec extends Specification { def is = sequential                  ^
       import Repo._
       owner(js)
     }
-    o().head.login must_== "dispatch"
+    o.completeOption must beSome.which { (x: Option[Repo.Owner]) =>
+      x.head.login == "dispatch"
+    }.eventually
   }
 
   def references1: MatchResult[Any] = {
@@ -67,9 +71,10 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // Returned json array can then be parsed using `as_github.GitRefs`,  
     // which returns a seqence of GitRef case classes
     val refs: Future[Seq[GitRef]] = Http(Client(Repos(user, repo).git_refs) > as_github.GitRefs)
-    
-    val master = (refs() find {_.ref == "refs/heads/master"}).head
-    master.git_object.`type` must_== "commit"
+    refs.completeOption must beSome.which { (x: Seq[GitRef]) =>
+      val master: GitRef = (x find {_.ref == "refs/heads/master"}).head
+      master.git_object.`type` == "commit"
+    }.eventually
   }
   
   def reference1: MatchResult[Any] = {
@@ -78,7 +83,9 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // Returned json object can then be parsed using `as_github.GitRef`,
     // which returns a GitRef case class
     val master: Future[GitRef] = Http(Client(Repos(user, repo).git_refs.head("master")) > as_github.GitRef)
-    master().git_object.`type` must_== "commit"
+    master.completeOption must beSome.which { (x: GitRef) =>
+      x.git_object.`type` == "commit"
+    }.eventually
   }
   
   def commit1: MatchResult[Any] = {
@@ -87,7 +94,9 @@ class GithubSpec extends Specification { def is = sequential                  ^
     // Returned json object can then be parsed using `as_github.GitCommit`,
     // which returns a GitCommit case class
     val commit: Future[GitCommit] = Http(Client(Repos(user, repo).git_commit(commit_sha)) > as_github.GitCommit)
-    commit().committer.name must_== "softprops"
+    commit.completeOption must beSome.which { (x: GitCommit) =>
+      x.committer.name == "softprops"
+    }.eventually
   }
   
   def commit2: MatchResult[Any] = {
@@ -97,7 +106,9 @@ class GithubSpec extends Specification { def is = sequential                  ^
       import GitCommit._
       message(js)
     }
-    msg().head.startsWith("add") must_== true
+    msg.completeOption must beSome.which { (x: Option[String]) =>
+      x.head.startsWith("add")
+    }.eventually
   }
   
   def commit3: MatchResult[Any] = {
@@ -106,7 +117,16 @@ class GithubSpec extends Specification { def is = sequential                  ^
     
     // this returns a GitCommit case class
     val commit: Future[GitCommit] = Http(Client(Repos(user, repo).git_commit(master())) > as_github.GitCommit)
-    commit().sha must_== master().git_object.sha
+    val result =
+      for {
+        c <- commit
+        m <- master
+      } yield c.sha == m.git_object.sha
+    result.completeOption must beSome.which { (x: Boolean) =>
+      x
+    }.eventually
+
+    // commit().sha must_== master().git_object.sha
   }
       
   def trees1: MatchResult[Any] = {
