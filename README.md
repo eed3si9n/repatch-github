@@ -3,6 +3,8 @@ repatch-github
 
 this is a dispatch plugin for github API v3.
 
+repatch-github is licensed under Apache License v2.
+
 ## authentication
 
 you can choose one from the four authenticating clients:
