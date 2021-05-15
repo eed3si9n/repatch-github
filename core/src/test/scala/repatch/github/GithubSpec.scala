@@ -1,10 +1,10 @@
 package repatch.github
 
-import org.specs2._
-import org.specs2.matcher._
-import dispatch._, Defaults._
-import repatch.github.{request => gh}
+import dispatch.Defaults._
+import dispatch._
 import org.json4s._
+import org.specs2._
+import repatch.github.{request => gh}
 
 class GithubSpec extends Specification { def is = args(sequential = true) ^ s2"""
   This is a specification to check the github handler
@@ -20,7 +20,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   `gh.repo(:owner, :repo).git_refs` should
     return a json array that can be parsed using `GitRefs`                    ${references1}
 
-  `gh.repo(:owner, :repo).git_refs.heads(\"master\")` should
+  `gh.repo(:owner, :repo).git_refs.heads(\"main\")` should
     return a json object that can be parsed using `GitRef`                    ${references2}
 
   `gh.repo(:owner, :repo).git_refs.tags` should
@@ -87,7 +87,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
     return a json object that can be parsed using `UsersSearch`               ${search5}
                                                                               """
 
-  lazy val http = new Http
+  lazy val http = Http.default
   lazy val client = gh.LocalConfigClient()
   val user = "dispatch"
   val name = "reboot"
@@ -142,14 +142,14 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
     // Returned json array can then be parsed using `GitRefs`,  
     // which returns a seqence of GitRef case classes
     val refs = http(client(gh.repo(user, name).git_refs) > as.repatch.github.response.GitRefs)
-    val master = (refs() find {_.ref == "refs/heads/master"}).head
+    val master = (refs() find {_.ref == "refs/heads/main"}).head
     master.git_object.`type` must_== "commit"
   }
 
   def references2 = {
-    val ref = http(client(gh.repo(user, name).git_refs.heads("master")) > as.repatch.github.response.GitRef)
+    val ref = http(client(gh.repo(user, name).git_refs.heads("main")) > as.repatch.github.response.GitRef)
     val master = ref()
-    master.ref must_== "refs/heads/master"
+    master.ref must_== "refs/heads/main"
   }
 
   def reftags1 = {
@@ -179,7 +179,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   
   def commit3 = {
     // this returns a GitRef case class
-    val master = http(client(gh.repo(user, name).git_refs.heads("master")) > as.repatch.github.response.GitRef)
+    val master = http(client(gh.repo(user, name).git_refs.heads("main")) > as.repatch.github.response.GitRef)
     
     // this returns a GitCommit case class
     val commit = http(client(gh.repo(user, name).git_commit(master())) > as.repatch.github.response.GitCommit)
@@ -227,10 +227,10 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   def raw1 = {
     // `client.raw(repo(user, name).git_blob(blob_sha))` constructs a request to
     // https://api.github.com/repos/dispatch/reboot/git/blobs/3baebe52555bc73ad1c9a94261c4552fb8d771cd
-    // with "application/vnd.github.raw" as http Accept header.
+    // with "application/vnd.github.VERSION.raw" as http Accept header.
     // This returns raw bytes. You are responsible for figuring out the charset.
     val raw = http(client.raw(gh.repo(user, name).git_blob(blob_sha)) > as.String)
-    
+
     (raw() startsWith ".classpath") must_== true
   }
 
@@ -242,7 +242,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
 
   def issues2 = {
     import gh.IssueState._
-    val iss = http(client(gh.issues.state(closed).labels("bug").asc) > as.repatch.github.response.Issues)
+    val iss = http(client(gh.repo(user, name).issues.state(closed).labels("bug").desc) > as.repatch.github.response.Issues)
     iss().head.state_opt must_== Some(closed)
   }
 
@@ -280,8 +280,8 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   }
 
   def orgs2 = {
-    val orgs = http(client(gh.user("eed3si9n").orgs) > as.repatch.github.response.Orgs)
-    orgs().head.login must_== "ny-scala"
+    val orgs = http(client(gh.user("eed3si9n").orgs.desc) > as.repatch.github.response.Orgs)
+    orgs().head.login must_== "scala"
   }
 
   def search1 = {
