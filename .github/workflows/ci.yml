@@ -30,4 +30,4 @@ jobs:
     - name: Coursier cache
       uses: coursier/cache-action@v6
     - name: Build and test
-      run: echo hello GitHub
+      run: sbt -v +test
