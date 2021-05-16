@@ -13,10 +13,11 @@ final case class LocalConfigClient(underlying: OAuthClient) extends AbstractClie
 }
 
 object LocalConfigClient {
+  lazy val envToken: Option[String] = sys.env.get("GITHUB_TOKEN")
   lazy val token: Option[String] = gitConfig("github.token")
   def apply(): LocalConfigClient = LocalConfigClient(MediaType.default)
   def apply(mimes: Seq[MediaType]): LocalConfigClient =
-    LocalConfigClient(OAuthClient(token getOrElse sys.error("Token was not found in local config!"), mimes))
+    LocalConfigClient(OAuthClient(envToken orElse token getOrElse sys.error("Token was not found in local config!"), mimes))
 
   // https://github.com/defunkt/gist/blob/master/lib/gist.rb#L237
   def gitConfig(key: String): Option[String] =
