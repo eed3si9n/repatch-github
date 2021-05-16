@@ -18,6 +18,8 @@ package object response {
   val User:         Response => res.User = Json andThen res.User.apply
   val Users:        Response => res.Paged[res.User] = res.Paged.parseArray(res.User.apply)
   val Orgs:         Response => res.Paged[res.Organization] = res.Paged.parseArray(res.Organization.apply)
+  val Organization: Response => res.Organization = Json andThen res.Organization.apply
+  val Package:      Response => res.Package = Json andThen res.Package.apply
 
   val ReposSearch:  Response => res.Paged[res.Repo] = res.Paged.parseSearchResult(res.Repo.apply)
   val CodeSearch:   Response => res.Paged[res.BlobRef] = res.Paged.parseSearchResult(res.BlobRef.apply)
