@@ -1,24 +1,10 @@
 package repatch.github.request
 
-trait Mime[R] {
-  import MediaType._
-  def mime(ms: Seq[MediaType]): R
-  def raw       = mime(Seq(current_version.raw_blob))
-  def diff      = mime(Seq(current_version.diff))
-  def patch     = mime(Seq(current_version.patch))
-  def raw_body  = mime(Seq(json, current_version.raw_body))
-  def text_body = mime(Seq(json, current_version.text_body))
-  def html_body = mime(Seq(json, current_version.html_body))
-  def full_body = mime(Seq(json, current_version.full_body))
-  def text_match = mime(Seq(json, current_version.text_match))
-  def current_version = v3
-}
-
 sealed trait MediaType {}
 
 object MediaType {
-  case class StringMediaType(mediaType: String) extends MediaType {}
-  case class GithubMediaType(_version: Option[String], _param: Option[String], _format: Option[String]) extends MediaType {
+  final case class StringMediaType(mediaType: String) extends MediaType {}
+  final case class GithubMediaType(_version: Option[String], _param: Option[String], _format: Option[String]) extends MediaType {
     def version(v: String): GithubMediaType = copy(_version = Some(v))
     def param(p: String): GithubMediaType = copy(_param = Some(p))
     def format(f: String): GithubMediaType = copy(_format = Some(f))
@@ -41,7 +27,7 @@ object MediaType {
         val version = v map { "." + _ } getOrElse ""
         val param   = p map { "." + _ } getOrElse ""
         val fmt     = f map { "+" + _ } getOrElse ""
-        s"""application/vnd.github.$version$param$fmt"""
+        s"""application/vnd.github$version$param$fmt"""
     }
   }
 

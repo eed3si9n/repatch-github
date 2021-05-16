@@ -1,9 +1,11 @@
 package dispatch.as.repatch.github
 
+
+
 package object response {
-  import com.ning.http.client.Response    
-  import repatch.github.{response => res}
+  import org.asynchttpclient.Response
   import dispatch.as.json4s.Json
+  import repatch.github.{response => res}
 
   val Repo:         Response => res.Repo = Json andThen res.Repo.apply
   val Repos:        Response => res.Paged[res.Repo] = res.Paged.parseArray(res.Repo.apply)
@@ -15,7 +17,7 @@ package object response {
   val Issues:       Response => res.Paged[res.Issue] = res.Paged.parseArray(res.Issue.apply)
   val User:         Response => res.User = Json andThen res.User.apply
   val Users:        Response => res.Paged[res.User] = res.Paged.parseArray(res.User.apply)
-  val Orgs:         Response => res.Paged[res.User] = Users
+  val Orgs:         Response => res.Paged[res.Organization] = res.Paged.parseArray(res.Organization.apply)
 
   val ReposSearch:  Response => res.Paged[res.Repo] = res.Paged.parseSearchResult(res.Repo.apply)
   val CodeSearch:   Response => res.Paged[res.BlobRef] = res.Paged.parseSearchResult(res.BlobRef.apply)
