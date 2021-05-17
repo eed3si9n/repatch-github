@@ -84,8 +84,14 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   `gh.orgs(:owner).packages(:packageType, :packageName)` should
     return a json object that can be parsed using `Package`                   ${pkg1}
 
+  `gh.orgs(:owner).packages(:packageType, :packageName).versions` should
+    return a json object that can be parsed using `PackageVersions`           ${pkg4}
+
   `gh.user(:user).packages(:packageType, :packageName)` should
     return a json object that can be parsed using `Package`                   ${pkg2}
+
+  `gh.user(:user).packages(:packageType, :packageName).versions` should
+    return a json object that can be parsed using `PackageVersions`           ${pkg3}
 
   `gh.search.repos("reboot language:scala")` should
     return a json object that can be parsed using `ReposSearch`               ${search1}
@@ -297,15 +303,15 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   def organizations1 = {
     val orgs = http(client(gh.organizations) > as.repatch.github.response.Orgs)
     val res = orgs()
-    res.size must_== 30
-    res.last.id must_== BigInt(3286)
+    (res.size must_== 30) and
+      (res.last.id must_== BigInt(3286))
   }
 
   def organizations2 = {
     val orgs = http(client(gh.organizations.since(BigInt(3286)).per_page(1)) > as.repatch.github.response.Orgs)
     val res = orgs()
-    res.size must_== 1
-    res.head.id must_== BigInt(3428)
+    (res.size must_== 1) and
+      (res.head.id must_== BigInt(3428))
   }
 
   def orgs2 = {
@@ -326,6 +332,21 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   def pkg2 = {
     val pkg = http(client(gh.user("er1c").`package`("maven", "com.example.java-project-example")) > as.repatch.github.response.Package)
     pkg().name must_== "com.example.java-project-example"
+  }
+
+  def pkg3 = {
+    val pkg = http(client(gh.user("er1c").`package`("maven", "com.example.java-project-example").versions) > as.repatch.github.response.PackageVersions)
+    val res = pkg()
+    (res.items.size must_== 1) and
+      (res.head.name must_== "0.1.0") and
+      (res.head.package_type must_== "maven")
+  }
+
+  def pkg4 = {
+    val pkg = http(client(gh.orgs("sbt").`package`("maven", "org.scala-sbt.io_2.12").versions) > as.repatch.github.response.PackageVersions)
+    val res = pkg()
+    (res.size must >=(5)) and
+      (res.head.package_type must_== "maven")
   }
 
   def search1 = {
