@@ -31,5 +31,5 @@ jobs:
       uses: coursier/cache-action@v6
     - name: Build and test
       env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
       run: sbt -v +test
