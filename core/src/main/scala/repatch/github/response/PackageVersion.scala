@@ -24,16 +24,16 @@ object PackageVersion extends Parse with CommonField {
 }
 
 final case class PackageVersion(
-  id: BigInt,
-  name: String,
-  url: String,
-  html_url: String,
-  license_opt: Option[String],
-  description_opt: Option[String],
-  created_at: Calendar,
-  updated_at: Calendar,
-  deleted_at_opt: Option[Calendar],
-  package_type: String,
-  //container_tags: Option[Seq[String]],
-  //docker_tags: Option[Seq[String]],
+    id: BigInt,
+    name: String,
+    url: String,
+    html_url: String,
+    license_opt: Option[String],
+    description_opt: Option[String],
+    created_at: Calendar,
+    updated_at: Calendar,
+    deleted_at_opt: Option[Calendar],
+    package_type: String,
+    //container_tags: Option[Seq[String]],
+    //docker_tags: Option[Seq[String]],
 )

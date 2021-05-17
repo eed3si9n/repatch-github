@@ -14,20 +14,22 @@ object GitBlob extends Parse with CommonField {
     )
 }
 
-/** represents git blob response.
- * @see https://docs.github.com/en/rest/reference/git#blobs
+/**
+ * represents git blob response.
+ * @see
+ *   https://docs.github.com/en/rest/reference/git#blobs
  */
 final case class GitBlob(
-  sha: String,
-  url: String,
-  encoding: String,
-  content: String,
-  size: BigInt
+    sha: String,
+    url: String,
+    encoding: String,
+    content: String,
+    size: BigInt
 ) {
   def as_str(charset: String): String =
     encoding match {
       case "base64" => new String(bytes, charset)
-      case _ => content
+      case _        => content
     }
 
   def as_utf8: String = as_str("UTF-8")

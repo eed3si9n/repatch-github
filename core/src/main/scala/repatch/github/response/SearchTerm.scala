@@ -14,6 +14,6 @@ object SearchTerm extends Parse {
 }
 
 final case class SearchTerm(
-  text: String,
-  indices: Seq[BigInt]
+    text: String,
+    indices: Seq[BigInt]
 )

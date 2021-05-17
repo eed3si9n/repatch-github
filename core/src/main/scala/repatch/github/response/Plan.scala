@@ -19,9 +19,9 @@ object Plan extends Parse with CommonField {
 }
 
 final case class Plan(
-  name: String,
-  space: Int,
-  private_repos: Int,
-  filled_seats: Int,
-  seats: Int
+    name: String,
+    space: Int,
+    private_repos: Int,
+    filled_seats: Int,
+    seats: Int
 )

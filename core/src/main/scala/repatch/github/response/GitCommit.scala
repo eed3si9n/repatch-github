@@ -11,7 +11,7 @@ object GitCommit extends Parse with CommonField {
       committer = GitUser(committer(json)),
       message = message(json),
       tree = GitShaUrl(tree(json)),
-      parents = parents(json) map {GitShaUrl.apply}
+      parents = parents(json) map { GitShaUrl.apply }
     )
 
   val author = 'author.![JObject]
@@ -20,15 +20,17 @@ object GitCommit extends Parse with CommonField {
   val parents = 'parents.![List[JValue]]
 }
 
-/** represents git commit response.
- * @see https://docs.github.com/en/rest/reference/git#commits
+/**
+ * represents git commit response.
+ * @see
+ *   https://docs.github.com/en/rest/reference/git#commits
  */
 final case class GitCommit(
-  sha: String,
-  url: String,
-  author: GitUser,
-  committer: GitUser,
-  message: String,
-  tree: GitShaUrl,
-  parents: Seq[GitShaUrl]
+    sha: String,
+    url: String,
+    author: GitUser,
+    committer: GitUser,
+    message: String,
+    tree: GitShaUrl,
+    parents: Seq[GitShaUrl]
 )

@@ -1,11 +1,13 @@
 package repatch.github.request
 
 import dispatch._
-import repatch.github.{response => res}
+import repatch.github.{ response => res }
 import collection.immutable.Map
 
-/** represents a github repository from the request-side
- * @see https://docs.github.com/en/rest/reference/repos
+/**
+ * represents a github repository from the request-side
+ * @see
+ *   https://docs.github.com/en/rest/reference/repos
  */
 final case class Repos(owner: String, name: String) extends Method {
   def git_refs = GitRefs(this, None)

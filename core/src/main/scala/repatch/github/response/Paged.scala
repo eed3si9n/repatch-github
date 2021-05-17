@@ -5,13 +5,14 @@ import dispatch._
 import org.json4s._
 import scala.collection.immutable.Map
 
-/** represents pagination.
+/**
+ * represents pagination.
  */
 final case class Paged[A](
-  items: Seq[A],
-  links: Map[String, String],
-  total_count_opt: Option[BigInt],
-  incomplete_results_opt: Option[Boolean]
+    items: Seq[A],
+    links: Map[String, String],
+    total_count_opt: Option[BigInt],
+    incomplete_results_opt: Option[Boolean]
 ) {
   def next_page: Option[String] = links.get("next")
   def last_page: Option[String] = links.get("last")
@@ -35,7 +36,8 @@ object Paged extends Parse {
       } yield f(v),
       links,
       None,
-      None)
+      None
+    )
   }
 
   def parseSearchResult[A](f: JValue => A): Response => Paged[A] = { (res: Response) =>
@@ -48,12 +50,16 @@ object Paged extends Parse {
   def linkHeader(res: Response): Map[String, String] =
     Map((Option(res.getHeader("Link")) match {
       case Some(s) =>
-        s.split(",").toList flatMap { x => x.split(";").toList match {
-          case v :: k :: Nil =>
-            Some(k.trim.replaceAllLiterally("rel=", "").replaceAllLiterally("\"", "") ->
-              v.trim.replaceAllLiterally(">", "").replaceAllLiterally("<", ""))
-          case _ => None
-        }}
+        s.split(",").toList flatMap { x =>
+          x.split(";").toList match {
+            case v :: k :: Nil =>
+              Some(
+                k.trim.replaceAllLiterally("rel=", "").replaceAllLiterally("\"", "") ->
+                  v.trim.replaceAllLiterally(">", "").replaceAllLiterally("<", "")
+              )
+            case _ => None
+          }
+        }
       case None => Nil
     }): _*)
 }

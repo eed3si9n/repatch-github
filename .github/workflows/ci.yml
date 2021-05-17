@@ -32,4 +32,4 @@ jobs:
     - name: Build and test
       env:
         GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
-      run: sbt -v +test
+      run: sbt -v scalafmtCheckAll +test

@@ -8,13 +8,13 @@ trait Show[A] {
 
 object Show {
   def showA[A]: Show[A] = new Show[A] {
-    def shows(a: A): String = a.toString 
+    def shows(a: A): String = a.toString
   }
-  implicit val stringShow  = showA[String]
-  implicit val intShow     = showA[Int]
-  implicit val bigIntShow  = showA[BigInt]
+  implicit val stringShow = showA[String]
+  implicit val intShow = showA[Int]
+  implicit val bigIntShow = showA[BigInt]
   implicit val booleanShow = showA[Boolean]
-  implicit val doubleShow  = showA[Double]
+  implicit val doubleShow = showA[Double]
   implicit val calendarShow: Show[Calendar] = new Show[Calendar] {
     def shows(a: Calendar): String = javax.xml.bind.DatatypeConverter.printDateTime(a)
   }

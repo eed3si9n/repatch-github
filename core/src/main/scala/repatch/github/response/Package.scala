@@ -25,15 +25,15 @@ object Package extends Parse with CommonField {
 }
 
 final case class Package(
-  id: BigInt,
-  name: String,
-  package_type: String,
-  url: String,
-  html_url: String,
-  owner_opt: Option[Owner],
-  repo_opt: Option[Repo],
-  version_count: Int,
-  visibility: String,
-  created_at: Calendar,
-  updated_at: Calendar
+    id: BigInt,
+    name: String,
+    package_type: String,
+    url: String,
+    html_url: String,
+    owner_opt: Option[Owner],
+    repo_opt: Option[Repo],
+    version_count: Int,
+    visibility: String,
+    created_at: Calendar,
+    updated_at: Calendar
 )

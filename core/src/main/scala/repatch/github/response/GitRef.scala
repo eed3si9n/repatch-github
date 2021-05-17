@@ -2,13 +2,15 @@ package repatch.github.response
 
 import org.json4s._
 
-/** represents git reference response.
- * @see https://docs.github.com/en/rest/reference/git#refs
+/**
+ * represents git reference response.
+ * @see
+ *   https://docs.github.com/en/rest/reference/git#refs
  */
 final case class GitRef(
-  ref: String,
-  url: String,
-  git_object: GitObject
+    ref: String,
+    url: String,
+    git_object: GitObject
 )
 
 /** provides parsing support for a git reference response. */

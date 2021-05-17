@@ -18,9 +18,9 @@ object Milestone extends Parse with CommonField {
 }
 
 final case class Milestone(
-  url: String,
-  number: BigInt,
-  state: String,
-  title: String,
-  description_opt: Option[String]
+    url: String,
+    number: BigInt,
+    state: String,
+    title: String,
+    description_opt: Option[String]
 )

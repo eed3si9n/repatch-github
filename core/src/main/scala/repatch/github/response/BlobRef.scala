@@ -18,11 +18,11 @@ object BlobRef extends Parse with CommonField {
 }
 
 final case class BlobRef(
-  sha: String,
-  url: String,
-  name: String,
-  path: String,
-  git_url: String,
-  html_url: String,
-  repository: Repo
+    sha: String,
+    url: String,
+    name: String,
+    path: String,
+    git_url: String,
+    html_url: String,
+    repository: Repo
 )

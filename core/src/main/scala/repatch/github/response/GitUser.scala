@@ -12,7 +12,7 @@ object GitUser extends Parse with CommonField {
 }
 
 final case class GitUser(
-  name: String,
-  email: String,
-  date: java.util.Calendar
+    name: String,
+    email: String,
+    date: java.util.Calendar
 )

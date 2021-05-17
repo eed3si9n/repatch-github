@@ -44,10 +44,13 @@ object Organization extends Parse with CommonField {
       default_repository_permission_opt = default_repository_permission_opt(json),
       members_can_create_repositories_opt = members_can_create_repositories_opt(json),
       two_factor_requirement_enabled_opt = two_factor_requirement_enabled_opt(json),
-      members_allowed_repository_creation_type_opt = members_allowed_repository_creation_type_opt(json),
+      members_allowed_repository_creation_type_opt =
+        members_allowed_repository_creation_type_opt(json),
       members_can_create_public_repositories_opt = members_can_create_public_repositories_opt(json),
-      members_can_create_private_repositories_opt = members_can_create_private_repositories_opt(json),
-      members_can_create_internal_repositories_opt = members_can_create_internal_repositories_opt(json),
+      members_can_create_private_repositories_opt =
+        members_can_create_private_repositories_opt(json),
+      members_can_create_internal_repositories_opt =
+        members_can_create_internal_repositories_opt(json),
       members_can_create_pages_opt = members_can_create_pages_opt(json),
     )
 
@@ -79,56 +82,60 @@ object Organization extends Parse with CommonField {
   val default_repository_permission_opt = 'default_repository_permission.?[String]
   val members_can_create_repositories_opt = 'members_can_create_repositories.?[Boolean]
   val two_factor_requirement_enabled_opt = 'two_factor_requirement_enabled.?[Boolean]
-  val members_allowed_repository_creation_type_opt = 'members_allowed_repository_creation_type.?[String]
-  val members_can_create_public_repositories_opt = 'members_can_create_public_repositories.?[Boolean]
-  val members_can_create_private_repositories_opt = 'members_can_create_private_repositories.?[Boolean]
-  val members_can_create_internal_repositories_opt = 'members_can_create_internal_repositories.?[Boolean]
+  val members_allowed_repository_creation_type_opt =
+    'members_allowed_repository_creation_type.?[String]
+  val members_can_create_public_repositories_opt =
+    'members_can_create_public_repositories.?[Boolean]
+  val members_can_create_private_repositories_opt =
+    'members_can_create_private_repositories.?[Boolean]
+  val members_can_create_internal_repositories_opt =
+    'members_can_create_internal_repositories.?[Boolean]
   val members_can_create_pages_opt = 'members_can_create_pages.?[Boolean]
 }
 
 final case class Organization(
-  login: String,
-  id: BigInt,
-  //node_id: String,
-  repos_url_opt: Option[String],
-  events_url_opt: Option[String],
-  hooks_url_opt: Option[String],
-  issues_url_opt: Option[String],
-  members_url_opt: Option[String],
-  public_members_url_opt: Option[String],
-  avatar_url_opt: Option[String],
-  description_opt: Option[String],
-  url_opt: Option[String],
-  name_opt: Option[String],
-  company_opt: Option[String],
-  blog_opt: Option[String],
-  location_opt: Option[String],
-  email_opt: Option[String],
-  twitter_username_opt: Option[String],
-  is_verified_opt: Option[Boolean],
-  has_organization_projects_opt: Option[Boolean],
-  has_repository_projects_opt: Option[Boolean],
-  public_repos_opt: Option[Int],
-  public_gists_opt: Option[Int],
-  followers_opt: Option[Int],
-  following_opt: Option[Int],
-  html_url_opt: Option[String],
-  created_at_opt: Option[Calendar],
-  updated_at_opt: Option[Calendar],
-  type_opt: Option[String],
-  total_private_repos_opt: Option[Int],
-  owned_private_repos_opt: Option[Int],
-  private_gists_opt: Option[Int],
-  disk_usage_opt: Option[BigInt],
-  collaborators_opt: Option[Int],
-  billing_email_opt: Option[String],
-  plan_opt: Option[Plan],
-  default_repository_permission_opt: Option[String],
-  members_can_create_repositories_opt: Option[Boolean],
-  two_factor_requirement_enabled_opt: Option[Boolean],
-  members_allowed_repository_creation_type_opt: Option[String],
-  members_can_create_public_repositories_opt: Option[Boolean],
-  members_can_create_private_repositories_opt: Option[Boolean],
-  members_can_create_internal_repositories_opt: Option[Boolean],
-  members_can_create_pages_opt: Option[Boolean]
+    login: String,
+    id: BigInt,
+    //node_id: String,
+    repos_url_opt: Option[String],
+    events_url_opt: Option[String],
+    hooks_url_opt: Option[String],
+    issues_url_opt: Option[String],
+    members_url_opt: Option[String],
+    public_members_url_opt: Option[String],
+    avatar_url_opt: Option[String],
+    description_opt: Option[String],
+    url_opt: Option[String],
+    name_opt: Option[String],
+    company_opt: Option[String],
+    blog_opt: Option[String],
+    location_opt: Option[String],
+    email_opt: Option[String],
+    twitter_username_opt: Option[String],
+    is_verified_opt: Option[Boolean],
+    has_organization_projects_opt: Option[Boolean],
+    has_repository_projects_opt: Option[Boolean],
+    public_repos_opt: Option[Int],
+    public_gists_opt: Option[Int],
+    followers_opt: Option[Int],
+    following_opt: Option[Int],
+    html_url_opt: Option[String],
+    created_at_opt: Option[Calendar],
+    updated_at_opt: Option[Calendar],
+    type_opt: Option[String],
+    total_private_repos_opt: Option[Int],
+    owned_private_repos_opt: Option[Int],
+    private_gists_opt: Option[Int],
+    disk_usage_opt: Option[BigInt],
+    collaborators_opt: Option[Int],
+    billing_email_opt: Option[String],
+    plan_opt: Option[Plan],
+    default_repository_permission_opt: Option[String],
+    members_can_create_repositories_opt: Option[Boolean],
+    two_factor_requirement_enabled_opt: Option[Boolean],
+    members_allowed_repository_creation_type_opt: Option[String],
+    members_can_create_public_repositories_opt: Option[Boolean],
+    members_can_create_private_repositories_opt: Option[Boolean],
+    members_can_create_internal_repositories_opt: Option[Boolean],
+    members_can_create_pages_opt: Option[Boolean]
 )

@@ -16,11 +16,11 @@ object ReadJs {
   }
 
   implicit val listRead: ReadJs[List[JValue]] = readJs { case JArray(v) => v }
-  implicit val objectRead: ReadJs[JObject]    = readJs { case JObject(v) => JObject(v) }
-  implicit val bigIntRead: ReadJs[BigInt]     = readJs { case JInt(v) => v }
-  implicit val intRead: ReadJs[Int]           = readJs { case JInt(v) => v.toInt }
-  implicit val stringRead: ReadJs[String]     = readJs { case JString(v) => v }
-  implicit val boolRead: ReadJs[Boolean]      = readJs { case JBool(v) => v }
+  implicit val objectRead: ReadJs[JObject] = readJs { case JObject(v) => JObject(v) }
+  implicit val bigIntRead: ReadJs[BigInt] = readJs { case JInt(v) => v }
+  implicit val intRead: ReadJs[Int] = readJs { case JInt(v) => v.toInt }
+  implicit val stringRead: ReadJs[String] = readJs { case JString(v) => v }
+  implicit val boolRead: ReadJs[Boolean] = readJs { case JBool(v) => v }
   implicit val calendarRead: ReadJs[Calendar] = readJs { case JString(v) =>
     // iso8601s
     javax.xml.bind.DatatypeConverter.parseDateTime(v)
@@ -29,8 +29,8 @@ object ReadJs {
   implicit def readJsListRead[A: ReadJs]: ReadJs[List[A]] = {
     val f = implicitly[ReadJs[A]].readJs
     readJs {
-      case JArray(xs) if xs forall {f.isDefinedAt} =>
-        xs map {f.apply}
+      case JArray(xs) if xs forall { f.isDefinedAt } =>
+        xs map { f.apply }
     }
-  }  
+  }
 }
