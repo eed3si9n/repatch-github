@@ -12,7 +12,7 @@ object GitObject extends Parse with CommonField {
 }
 
 final case class GitObject(
-  sha: String,
-  url: String,
-  `type`: String
+    sha: String,
+    url: String,
+    `type`: String
 )

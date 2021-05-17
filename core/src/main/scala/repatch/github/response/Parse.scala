@@ -12,6 +12,6 @@ trait Parse {
   implicit class SymOp(sym: Symbol) {
     def ?[A: ReadJs](js: JValue): Option[A] = parseField[A](sym.name)(js)
     def ?[A: ReadJs]: JValue => Option[A] = ?[A](_)
-    def ![A: ReadJs]: JValue => A = parseField_![A](sym.name)_
+    def ![A: ReadJs]: JValue => A = parseField_![A](sym.name) _
   }
 }

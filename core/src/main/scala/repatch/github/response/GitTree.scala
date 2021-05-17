@@ -14,14 +14,16 @@ object GitTree extends Parse with CommonField {
     )
 }
 
-/** represents git tree response
- * @see https://docs.github.com/en/rest/reference/git#trees
+/**
+ * represents git tree response
+ * @see
+ *   https://docs.github.com/en/rest/reference/git#trees
  */
 final case class GitTree(
-  sha: String,
-  url: String,
-  path: String,
-  mode: String,
-  `type`: String,
-  size_opt: Option[BigInt]
+    sha: String,
+    url: String,
+    path: String,
+    mode: String,
+    `type`: String,
+    size_opt: Option[BigInt]
 )

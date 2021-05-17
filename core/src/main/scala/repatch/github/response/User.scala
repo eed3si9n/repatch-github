@@ -19,14 +19,14 @@ object User extends Parse with CommonField {
 }
 
 final case class User(
-  url: String,
-  login: String,
-  id: BigInt,
-  html_url_opt: Option[String],
-  avatar_url_opt: Option[String],
-  gravatar_id_opt: Option[String],
-  type_opt: Option[String],
-  site_admin_opt: Option[Boolean],
-  name_opt: Option[String],
-  email_opt: Option[String]
+    url: String,
+    login: String,
+    id: BigInt,
+    html_url_opt: Option[String],
+    avatar_url_opt: Option[String],
+    gravatar_id_opt: Option[String],
+    type_opt: Option[String],
+    site_admin_opt: Option[Boolean],
+    name_opt: Option[String],
+    email_opt: Option[String]
 )

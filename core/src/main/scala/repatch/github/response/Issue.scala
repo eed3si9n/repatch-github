@@ -40,19 +40,19 @@ object Issue extends Parse with CommonField {
 }
 
 final case class Issue(
-  url: String,
-  html_url_opt: Option[String],
-  number_opt: Option[BigInt],
-  state_opt: Option[IssueState],
-  title_opt: Option[String],
-  body_opt: Option[String],
-  user_opt: Option[User],
-  labels: Seq[Label],
-  assignee_opt: Option[User],
-  milestone_opt: Option[Milestone],
-  comments_opt: Option[BigInt],
-  pull_request_opt: Option[PullRequest],
-  closed_at_opt: Option[Calendar],
-  created_at_opt: Option[Calendar],
-  updated_at_opt: Option[Calendar]
+    url: String,
+    html_url_opt: Option[String],
+    number_opt: Option[BigInt],
+    state_opt: Option[IssueState],
+    title_opt: Option[String],
+    body_opt: Option[String],
+    user_opt: Option[User],
+    labels: Seq[Label],
+    assignee_opt: Option[User],
+    milestone_opt: Option[Milestone],
+    comments_opt: Option[BigInt],
+    pull_request_opt: Option[PullRequest],
+    closed_at_opt: Option[Calendar],
+    created_at_opt: Option[Calendar],
+    updated_at_opt: Option[Calendar]
 )

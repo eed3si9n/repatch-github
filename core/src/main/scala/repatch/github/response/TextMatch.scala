@@ -20,9 +20,9 @@ object TextMatch extends Parse {
 }
 
 final case class TextMatch(
-  object_url: String,
-  object_type: String,
-  property: String,
-  fragment: String,
-  matches: Seq[SearchTerm]
+    object_url: String,
+    object_type: String,
+    property: String,
+    fragment: String,
+    matches: Seq[SearchTerm]
 )

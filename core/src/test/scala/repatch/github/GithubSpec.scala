@@ -4,9 +4,10 @@ import dispatch.Defaults._
 import dispatch._
 import org.json4s._
 import org.specs2._
-import repatch.github.{request => gh}
+import repatch.github.{ request => gh }
 
-class GithubSpec extends Specification { def is = args(sequential = true) ^ s2"""
+class GithubSpec extends Specification {
+  def is = args(sequential = true) ^ s2"""
   This is a specification to check the github handler
   
   `gh.repo(:owner, :repo)` should
@@ -134,7 +135,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   def repos2 = {
     // Returned json object can also be parsed field-by-field using an extractor
     val x = http(client(gh.repo(user, name)) > as.json4s.Json)
-    val o = x map { json =>  
+    val o = x map { json =>
       import repatch.github.response.Repo._
       owner(json)
     }
@@ -151,7 +152,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
 
     repos().full_name must_== "dispatch/reboot"
   }
-  
+
   def repos4 = {
     val repos = http(client(gh.user.repos.asc) > as.repatch.github.response.Repos)
     repos().head.full_name must_!= "foo"
@@ -160,34 +161,38 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   def references1 = {
     // `client(repos(user, repo).git_refs)` constructs a request to
     // https://api.github.com/repos/dispatch/reboot/git/refs
-    // Returned json array can then be parsed using `GitRefs`,  
+    // Returned json array can then be parsed using `GitRefs`,
     // which returns a seqence of GitRef case classes
     val refs = http(client(gh.repo(user, name).git_refs) > as.repatch.github.response.GitRefs)
-    val master = (refs() find {_.ref == "refs/heads/main"}).head
+    val master = (refs() find { _.ref == "refs/heads/main" }).head
     master.git_object.`type` must_== "commit"
   }
 
   def references2 = {
-    val ref = http(client(gh.repo(user, name).git_refs.heads("main")) > as.repatch.github.response.GitRef)
+    val ref = http(
+      client(gh.repo(user, name).git_refs.heads("main")) > as.repatch.github.response.GitRef
+    )
     val master = ref()
     master.ref must_== "refs/heads/main"
   }
 
   def reftags1 = {
     val refs = http(client(gh.repo(user, name).git_refs.tags) > as.repatch.github.response.GitRefs)
-    val zeroEleven = (refs() find {_.ref == "refs/tags/0.11.0"}).head
+    val zeroEleven = (refs() find { _.ref == "refs/tags/0.11.0" }).head
     zeroEleven.git_object.`type` must_== "commit"
   }
-  
+
   def commit1 = {
     // `client(repos(user, name).git_commit(commit_sha))` constructs a request to
     // https://api.github.com/repos/dispatch/reboot/git/commits/bcf6d255317088ca1e32c6e6ecd4dce1979ac718
     // Returned json object can then be parsed using `GitCommit`,
     // which returns a GitCommit case class
-    val commit = http(client(gh.repo(user, name).git_commit(commit_sha)) > as.repatch.github.response.GitCommit)
+    val commit = http(
+      client(gh.repo(user, name).git_commit(commit_sha)) > as.repatch.github.response.GitCommit
+    )
     commit().committer.name must_== "softprops"
   }
-  
+
   def commit2 = {
     // Returned json object can also be parsed field-by-field using an extractor
     val json = http(client(gh.repo(user, name).git_commit(commit_sha)) > as.json4s.Json)
@@ -197,54 +202,72 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
     }
     msg().startsWith("send") must_== true
   }
-  
+
   def commit3 = {
     // this returns a GitRef case class
-    val master = http(client(gh.repo(user, name).git_refs.heads("main")) > as.repatch.github.response.GitRef)
-    
+    val master = http(
+      client(gh.repo(user, name).git_refs.heads("main")) > as.repatch.github.response.GitRef
+    )
+
     // this returns a GitCommit case class
-    val commit = http(client(gh.repo(user, name).git_commit(master())) > as.repatch.github.response.GitCommit)
+    val commit = http(
+      client(gh.repo(user, name).git_commit(master())) > as.repatch.github.response.GitCommit
+    )
     commit().sha must_== master().git_object.sha
   }
-      
+
   def trees1 = {
     // `client(repos(user, name).git_trees(tree_sha))` constructs a request to
     // https://api.github.com/repos/dispatch/reboot/git/trees/563c7dcea4bbb71e49313e92c01337a0a4b7ce72
     // Returned json object can then be parsed using `GitTrees`,
     // which returns a seqence of GitTree case class
-    val trees = http(client(gh.repo(user, name).git_trees(tree_sha)) > as.repatch.github.response.GitTrees)
+    val trees = http(
+      client(gh.repo(user, name).git_trees(tree_sha)) > as.repatch.github.response.GitTrees
+    )
     import repatch.github.response.GitTree
     trees().tree must contain { tree: GitTree => tree.path must be_==(".gitignore") }
   }
 
   def recursive1 = {
     // this returns a sequence of GitTree case class
-    val trees = http(client(gh.repo(user, name).git_trees(tree_sha).recursive(10)) > as.repatch.github.response.GitTrees)
+    val trees = http(
+      client(
+        gh.repo(user, name).git_trees(tree_sha).recursive(10)
+      ) > as.repatch.github.response.GitTrees
+    )
     import repatch.github.response.GitTree
-    trees().tree must contain { tree: GitTree => tree.path must be_==("core/src/main/scala/retry/retries.scala") }
+    trees().tree must contain { tree: GitTree =>
+      tree.path must be_==("core/src/main/scala/retry/retries.scala")
+    }
   }
-  
+
   def trees2 = {
     // this returns a GitCommit case class
-    val commit = http(client(gh.repo(user, name).git_commit(commit_sha)) > as.repatch.github.response.GitCommit)    
-    
+    val commit = http(
+      client(gh.repo(user, name).git_commit(commit_sha)) > as.repatch.github.response.GitCommit
+    )
+
     // this returns a seqence of GitTree case class
-    val trees = http(client(gh.repo(user, name).git_trees(commit())) > as.repatch.github.response.GitTrees)
+    val trees = http(
+      client(gh.repo(user, name).git_trees(commit())) > as.repatch.github.response.GitTrees
+    )
     import repatch.github.response.GitTree
     trees().tree must contain { tree: GitTree => tree.path must be_==(".gitignore") }
   }
-    
+
   def blob1 = {
     // `client(repos(user, name).git_blob(blob_sha))` constructs a request to
     // https://api.github.com/repos/dispatch/reboot/git/blobs/3baebe52555bc73ad1c9a94261c4552fb8d771cd
     // Returned json object can then be parsed using `GitBlob`,
     // which returns a GitBlob case class
-    val blob = http(client(gh.repo(user, name).git_blob(blob_sha)) > as.repatch.github.response.GitBlob)
-    
+    val blob = http(
+      client(gh.repo(user, name).git_blob(blob_sha)) > as.repatch.github.response.GitBlob
+    )
+
     // `as_utf8` method makes the assumption that the contained content is encoded in UTF-8.
     (blob().as_utf8 startsWith ".classpath") must_== true
   }
-  
+
   def raw1 = {
     // `client.raw(repo(user, name).git_blob(blob_sha))` constructs a request to
     // https://api.github.com/repos/dispatch/reboot/git/blobs/3baebe52555bc73ad1c9a94261c4552fb8d771cd
@@ -263,7 +286,11 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
 
   def issues2 = {
     import gh.IssueState._
-    val iss = http(client(gh.repo(user, name).issues.state(closed).labels("bug").desc) > as.repatch.github.response.Issues)
+    val iss = http(
+      client(
+        gh.repo(user, name).issues.state(closed).labels("bug").desc
+      ) > as.repatch.github.response.Issues
+    )
     iss().head.state_opt must_== Some(closed)
   }
 
@@ -275,7 +302,9 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
 
   def pagination1 = {
     import repatch.github.response.IssueState._
-    val iss = http(client(gh.repo(user, name).issues.page(1).per_page(1)) > as.repatch.github.response.Issues)
+    val iss = http(
+      client(gh.repo(user, name).issues.page(1).per_page(1)) > as.repatch.github.response.Issues
+    )
     iss().next_page match {
       case Some(next) =>
         val iss2 = http(client(gh.url(next)) > as.repatch.github.response.Issues)
@@ -287,7 +316,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
 
   def user1 = {
     val usr = http(client(gh.user) > as.repatch.github.response.User)
-    usr().login must_!= "foo" 
+    usr().login must_!= "foo"
   }
 
   def user2 = {
@@ -308,7 +337,9 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   }
 
   def organizations2 = {
-    val orgs = http(client(gh.organizations.since(BigInt(3286)).per_page(1)) > as.repatch.github.response.Orgs)
+    val orgs = http(
+      client(gh.organizations.since(BigInt(3286)).per_page(1)) > as.repatch.github.response.Orgs
+    )
     val res = orgs()
     (res.size must_== 1) and
       (res.head.id must_== BigInt(3428))
@@ -325,17 +356,29 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   }
 
   def pkg1 = {
-    val pkg = http(client(gh.orgs("sbt").`package`("maven", "org.scala-sbt.io_2.12")) > as.repatch.github.response.Package)
+    val pkg = http(
+      client(
+        gh.orgs("sbt").`package`("maven", "org.scala-sbt.io_2.12")
+      ) > as.repatch.github.response.Package
+    )
     pkg().name must_== "org.scala-sbt.io_2.12"
   }
 
   def pkg2 = {
-    val pkg = http(client(gh.user("er1c").`package`("maven", "com.example.java-project-example")) > as.repatch.github.response.Package)
+    val pkg = http(
+      client(
+        gh.user("er1c").`package`("maven", "com.example.java-project-example")
+      ) > as.repatch.github.response.Package
+    )
     pkg().name must_== "com.example.java-project-example"
   }
 
   def pkg3 = {
-    val pkg = http(client(gh.user("er1c").`package`("maven", "com.example.java-project-example").versions) > as.repatch.github.response.PackageVersions)
+    val pkg = http(
+      client(
+        gh.user("er1c").`package`("maven", "com.example.java-project-example").versions
+      ) > as.repatch.github.response.PackageVersions
+    )
     val res = pkg()
     (res.items.size must_== 1) and
       (res.head.name must_== "0.1.0") and
@@ -343,31 +386,45 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   }
 
   def pkg4 = {
-    val pkg = http(client(gh.orgs("sbt").`package`("maven", "org.scala-sbt.io_2.12").versions) > as.repatch.github.response.PackageVersions)
+    val pkg = http(
+      client(
+        gh.orgs("sbt").`package`("maven", "org.scala-sbt.io_2.12").versions
+      ) > as.repatch.github.response.PackageVersions
+    )
     val res = pkg()
-    (res.size must be>=(5)) and
+    (res.size must be >= (5)) and
       (res.head.package_type must_== "maven")
   }
 
   def search1 = {
-    val repos = http(client(gh.search.repos("reboot language:scala")) > as.repatch.github.response.ReposSearch)
+    val repos = http(
+      client(gh.search.repos("reboot language:scala")) > as.repatch.github.response.ReposSearch
+    )
     repos().head.full_name must_== "dispatch/reboot"
   }
 
   def search2 = {
-    val code = http(client(gh.search.code("\"case class Req\" in:file repo:dispatch/reboot")) > 
-      as.repatch.github.response.CodeSearch)
+    val code = http(
+      client(gh.search.code("\"case class Req\" in:file repo:dispatch/reboot")) >
+        as.repatch.github.response.CodeSearch
+    )
     code().head.path must_== "core/src/main/scala/requests.scala"
   }
 
   def search3 = {
-    val code = http(client.text_match(gh.search.code("\"case class Req\" in:file repo:dispatch/reboot")) >
-      as.repatch.github.response.TextMatches)
-    code().head.text_matches.head.fragment must contain("case class Req") 
+    val code = http(
+      client.text_match(gh.search.code("\"case class Req\" in:file repo:dispatch/reboot")) >
+        as.repatch.github.response.TextMatches
+    )
+    code().head.text_matches.head.fragment must contain("case class Req")
   }
 
   def search4 = {
-    val iss = http(client(gh.search.issues("oauth client access repo:eed3si9n/repatch-github")) > as.repatch.github.response.IssuesSearch)
+    val iss = http(
+      client(
+        gh.search.issues("oauth client access repo:eed3si9n/repatch-github")
+      ) > as.repatch.github.response.IssuesSearch
+    )
     iss().head.number_opt must_== Some(1)
   }
 

@@ -14,7 +14,7 @@ object Label extends Parse with CommonField {
 }
 
 final case class Label(
-  url: String,
-  name: String,
-  color: String
+    url: String,
+    name: String,
+    color: String
 )

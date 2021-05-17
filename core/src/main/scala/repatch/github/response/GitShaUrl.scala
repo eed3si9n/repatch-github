@@ -7,6 +7,6 @@ object GitShaUrl extends Parse with CommonField {
 }
 
 final case class GitShaUrl(
-  sha: String,
-  url: String
+    sha: String,
+    url: String
 )

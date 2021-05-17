@@ -22,8 +22,8 @@ object PullRequest extends Parse with CommonField {
 }
 
 final case class PullRequest(
-  url: String,
-  html_url: String,
-  diff_url: String,
-  patch_url: String
+    url: String,
+    html_url: String,
+    diff_url: String,
+    patch_url: String
 )

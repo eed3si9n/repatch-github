@@ -14,7 +14,7 @@ object GitTrees extends Parse with CommonField {
 }
 
 final case class GitTrees(
-  sha: String,
-  url: String,
-  tree: Seq[GitTree]
+    sha: String,
+    url: String,
+    tree: Seq[GitTree]
 )

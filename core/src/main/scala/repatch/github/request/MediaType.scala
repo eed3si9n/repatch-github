@@ -4,7 +4,11 @@ sealed trait MediaType {}
 
 object MediaType {
   final case class StringMediaType(mediaType: String) extends MediaType {}
-  final case class GithubMediaType(_version: Option[String], _param: Option[String], _format: Option[String]) extends MediaType {
+  final case class GithubMediaType(
+      _version: Option[String],
+      _param: Option[String],
+      _format: Option[String]
+  ) extends MediaType {
     def version(v: String): GithubMediaType = copy(_version = Some(v))
     def param(p: String): GithubMediaType = copy(_param = Some(p))
     def format(f: String): GithubMediaType = copy(_format = Some(f))
@@ -25,15 +29,14 @@ object MediaType {
       case StringMediaType(x) => x
       case GithubMediaType(v, p, f) =>
         val version = v map { "." + _ } getOrElse ""
-        val param   = p map { "." + _ } getOrElse ""
-        val fmt     = f map { "+" + _ } getOrElse ""
+        val param = p map { "." + _ } getOrElse ""
+        val fmt = f map { "+" + _ } getOrElse ""
         s"""application/vnd.github$version$param$fmt"""
     }
   }
 
-  /** THe basic json media type and version info:
-   * application/json
-   * application/vnd.github.v3+json
+  /**
+   * THe basic json media type and version info: application/json application/vnd.github.v3+json
    */
   val default: Seq[MediaType] = Seq(json, v3.format_json)
   lazy val json: MediaType = StringMediaType("application/json")
