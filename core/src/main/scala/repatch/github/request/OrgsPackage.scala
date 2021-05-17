@@ -23,7 +23,7 @@ object OrgsPackage {
   }
 
   final case class OrgsPackageVersionDelete(pkg: OrgsPackage, versionId: BigInt) extends Method {
-    override def complete: Req => Req = { req: Req => pkg.org.complete(req.DELETE) / "packages" / pkg.packageType / pkg.packageName / "version" / versionId.toString() }
+    override def complete: Req => Req = { req: Req => pkg.org.complete(req.DELETE) / "packages" / pkg.packageType / pkg.packageName / "versions" / versionId.toString() }
   }
 
   final case class OrgsPackageVersions(pkg: OrgsPackage, params: Map[String, String] = Map()) extends Method with Param[OrgsPackageVersions] with PageParam[OrgsPackageVersions] {
