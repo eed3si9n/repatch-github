@@ -1,4 +1,4 @@
-lazy val baseVersion = "0.1.0-SNAPSHOT"
+lazy val baseVersion = "0.1.1-SNAPSHOT"
 lazy val specsVersion = "4.11.0"
 lazy val scala212 = "2.12.13"
 lazy val scala213 = "2.13.6"
