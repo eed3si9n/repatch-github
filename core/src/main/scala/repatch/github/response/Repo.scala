@@ -54,7 +54,8 @@ object Repo extends Parse with CommonField {
 /** represents repository response.
  * @see https://docs.github.com/en/rest/reference/repos
  */
-final case class Repo(id: BigInt,
+final case class Repo(
+  id: BigInt,
   url: String,
   owner: User,
   name: String,

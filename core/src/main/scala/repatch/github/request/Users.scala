@@ -15,4 +15,5 @@ final case class Users(name: Option[String]) extends Method {
 
   def repos: UsersRepos = UsersRepos(this)
   def orgs: UsersOrgs = UsersOrgs(this)
+  def `package`(packageType: String, packageName: String) = UsersPackage(this, packageType, packageName)
 }

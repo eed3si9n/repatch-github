@@ -26,7 +26,6 @@ object Issue extends Parse with CommonField {
       updated_at_opt = updated_at_opt(json)
     )
 
-  val html_url_opt = 'html_url.?[String]
   val number_opt = 'number.?[BigInt]
   val state_opt = 'state.?[IssueState]
   val title_opt = 'title.?[String]

@@ -7,6 +7,8 @@ package object request {
   def user(name: String): Users = Users(Some(name))
   def url(u: String): UrlMethod = UrlMethod(u)
   def search: Search = Search()
+  def organizations: Organizations = Organizations()
+  def orgs(owner: String): Orgs = Orgs(owner)
 
   type IssueState = repatch.github.response.IssueState
   val IssueState = repatch.github.response.IssueState

@@ -16,14 +16,6 @@ object User extends Parse with CommonField {
       name_opt = name_opt(json),
       email_opt = email_opt(json)
     )
-
-  val login = 'login.![String]
-  val html_url_opt = 'html_url.?[String]
-  val avatar_url_opt = 'avatar_url.?[String]
-  val gravatar_id_opt = 'gravatar_id.?[String]
-  val site_admin_opt = 'site_admin.?[Boolean]
-  val name_opt = 'name.?[String]
-  val email_opt = 'email.?[String]
 }
 
 final case class User(
