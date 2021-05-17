@@ -23,7 +23,8 @@ lazy val core = (project in file("core"))
     libraryDependencies ++= Seq(
       "org.dispatchhttp" %% "dispatch-core" % dispatchVersion.value,
       "org.dispatchhttp" %% "dispatch-json4s-native" % dispatchVersion.value,
-      "org.specs2" %% "specs2-core" % specsVersion % Test
+      "org.specs2" %% "specs2-core" % specsVersion % Test,
+      "javax.xml.bind" % "jaxb-api" % "2.3.0", // For java11
     ),
     console / initialCommands := """import dispatch._, Defaults._
                                    |import repatch.github.{request => gh}

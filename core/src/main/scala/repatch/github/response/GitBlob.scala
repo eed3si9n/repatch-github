@@ -35,6 +35,6 @@ final case class GitBlob(
   def bytes: Array[Byte] =
     encoding match {
       case "utf-8"  => content.getBytes
-      case "base64" => (new sun.misc.BASE64Decoder()).decodeBuffer(content)
+      case "base64" => java.util.Base64.getMimeDecoder.decode(content)
     }
 }
