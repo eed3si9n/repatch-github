@@ -13,12 +13,17 @@ final case class OrgsPackage(org: Orgs, packageType: String, packageName: String
     copy(params = params + (key -> implicitly[Show[A]].shows(value)))
 
   def delete = OrgsPackage.OrgsPackageDelete(this)
+  def deleteVersion(versionId: BigInt) = OrgsPackage.OrgsPackageVersionDelete(this, versionId)
   def versions = OrgsPackage.OrgsPackageVersions(this)
 }
 
 object OrgsPackage {
   final case class OrgsPackageDelete(pkg: OrgsPackage) extends Method {
     override def complete: Req => Req = { req: Req => pkg.org.complete(req.DELETE) / "packages" / pkg.packageType / pkg.packageName }
+  }
+
+  final case class OrgsPackageVersionDelete(pkg: OrgsPackage, versionId: BigInt) extends Method {
+    override def complete: Req => Req = { req: Req => pkg.org.complete(req.DELETE) / "packages" / pkg.packageType / pkg.packageName / "version" / versionId.toString() }
   }
 
   final case class OrgsPackageVersions(pkg: OrgsPackage, params: Map[String, String] = Map()) extends Method with Param[OrgsPackageVersions] with PageParam[OrgsPackageVersions] {

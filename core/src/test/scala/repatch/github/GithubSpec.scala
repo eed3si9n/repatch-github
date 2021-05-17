@@ -345,7 +345,7 @@ class GithubSpec extends Specification { def is = args(sequential = true) ^ s2""
   def pkg4 = {
     val pkg = http(client(gh.orgs("sbt").`package`("maven", "org.scala-sbt.io_2.12").versions) > as.repatch.github.response.PackageVersions)
     val res = pkg()
-    (res.size must >=(5)) and
+    (res.size must be>=(5)) and
       (res.head.package_type must_== "maven")
   }
 

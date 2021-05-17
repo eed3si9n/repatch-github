@@ -13,12 +13,18 @@ final case class UsersPackage(user: Users, packageType: String, packageName: Str
     copy(params = params + (key -> implicitly[Show[A]].shows(value)))
 
   def delete = UsersPackage.UsersPackageDelete(this)
+  def deleteVersion(versionId: BigInt) = UsersPackage.UsersPackageVersionDelete(this, versionId)
   def versions = UsersPackage.UsersPackageVersions(this)
+
 }
 
 object UsersPackage {
   final case class UsersPackageDelete(pkg: UsersPackage) extends Method {
     override def complete: Req => Req = { req: Req => pkg.user.complete(req.DELETE) / "packages" / pkg.packageType / pkg.packageName }
+  }
+
+  final case class UsersPackageVersionDelete(pkg: UsersPackage, versionId: BigInt) extends Method {
+    override def complete: Req => Req = { req: Req => pkg.user.complete(req.DELETE) / "packages" / pkg.packageType / pkg.packageName / "version" / versionId.toString() }
   }
 
   final case class UsersPackageVersions(pkg: UsersPackage, params: Map[String, String] = Map()) extends Method with Param[UsersPackageVersions] with PageParam[UsersPackageVersions] {
