@@ -12,7 +12,7 @@ object Plan extends Parse with CommonField {
       seats = seats(json),
     )
 
-  val space = 'repos_url.![Int]
+  val space = 'space.![Int]
   val private_repos = 'private_repos.![Int]
   val filled_seats = 'filled_seats.![Int]
   val seats = 'seats.![Int]
