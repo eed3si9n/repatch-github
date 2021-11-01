@@ -3,11 +3,41 @@ package repatch.github
 import dispatch.Defaults._
 import dispatch._
 import org.json4s._
+import org.specs2.specification.core.SpecStructure
+//import org.slf4j.LoggerFactory
+//import ch.qos.logback.classic.{Level, Logger}
 import org.specs2._
 import repatch.github.{ request => gh }
 
 class GithubSpec extends Specification {
-  def is = args(sequential = true) ^ s2"""
+//  LoggerFactory
+//    .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
+//    .asInstanceOf[Logger]
+//    .setLevel(Level.WARN)
+//
+//  private def setLogLevel(level: Level): Unit =
+//    LoggerFactory
+//      .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
+//      .asInstanceOf[Logger]
+//      .setLevel(level)
+//
+//  private def getLogLevel: Level =
+//    LoggerFactory
+//      .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
+//      .asInstanceOf[Logger]
+//      .getLevel
+//
+//  private def withLogLevel[T](level: Level)(f: => Future[T]): Future[T] = {
+//    val origLevel = getLogLevel
+//    setLogLevel(level)
+//    val ret = f
+//    f.onComplete { case _ => setLogLevel(origLevel) }
+//    ret
+//  }
+//  // Example Usage:
+//  //     val repos = withLogLevel(Level.DEBUG)(http(client(gh.user(user).repos.asc) > as.repatch.github.response.Repos))
+
+  def is: SpecStructure = args(sequential = true) ^ s2"""
   This is a specification to check the github handler
   
   `gh.repo(:owner, :repo)` should
@@ -15,7 +45,10 @@ class GithubSpec extends Specification {
     return a json object that can be parsed with extractors                   ${repos2}
     return a json object that can be parsed using `Repo`"                     ${repos3}
 
-  `gh.user.repos` should
+  `gh.user` should
+    return a json object that can be parsed using `User`                      ${user1}
+
+  `gh.user(:user).repos` should
     return a json object that can be parsed using `Repos`                     ${repos4}
 
   `gh.repo(:owner, :repo).git_refs` should
@@ -154,8 +187,13 @@ class GithubSpec extends Specification {
   }
 
   def repos4 = {
-    val repos = http(client(gh.user.repos.asc) > as.repatch.github.response.Repos)
+    val repos = http(client(gh.user(user).repos.asc) > as.repatch.github.response.Repos)
     repos().head.full_name must_!= "foo"
+  }
+
+  def users1 = {
+    val repos = http(client(gh.user) > as.repatch.github.response.User)
+    repos().login must_== "eed3si9n"
   }
 
   def references1 = {

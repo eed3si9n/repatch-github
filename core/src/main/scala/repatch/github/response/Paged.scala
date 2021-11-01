@@ -30,10 +30,10 @@ object Paged extends Parse {
     val json = as.json4s.Json(res)
     val links = linkHeader(res)
     Paged(
-      for {
-        JArray(array) <- json
-        v <- array
-      } yield f(v),
+      json match {
+        case JArray(array) => array.map { f(_) }
+        case _             => Nil
+      },
       links,
       None,
       None
@@ -43,7 +43,7 @@ object Paged extends Parse {
   def parseSearchResult[A](f: JValue => A): Response => Paged[A] = { (res: Response) =>
     val json = as.json4s.Json(res)
     val links = linkHeader(res)
-    val xs = items(json).toSeq map f
+    val xs = items(json) map f
     Paged(xs, links, total_count_opt(json), incomplete_results_opt(json))
   }
 
