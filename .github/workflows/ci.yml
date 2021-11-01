@@ -16,6 +16,7 @@ jobs:
             java: 11
             jobtype: 1
     runs-on: ${{ matrix.os }}
+    permissions: read-all
     env:
       # define Java options for both official sbt and sbt-extras
       JAVA_OPTS: -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
@@ -31,5 +32,5 @@ jobs:
       uses: coursier/cache-action@v6
     - name: Build and test
       env:
-        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: sbt -v scalafmtCheckAll +test
