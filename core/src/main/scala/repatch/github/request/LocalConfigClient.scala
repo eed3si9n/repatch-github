@@ -28,6 +28,11 @@ object LocalConfigClient {
       )
     )
 
+  def apply(token: String): LocalConfigClient = apply(token, MediaType.default)
+
+  def apply(token: String, mimes: Seq[MediaType]): LocalConfigClient =
+    LocalConfigClient(OAuthClient(token, mimes))
+
   // https://github.com/defunkt/gist/blob/master/lib/gist.rb#L237
   def gitConfig(key: String): Option[String] =
     allCatch opt {
