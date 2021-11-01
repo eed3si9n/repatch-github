@@ -1,7 +1,12 @@
 repatch-github
 --------------
+[![Continuous Integration](https://github.com/eed3si9n/repatch-github/actions/workflows/ci.yml/badge.svg)](https://github.com/eed3si9n/repatch-github/actions/workflows/ci.yml)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.eed3si9n/repatch-github_2.13/badge.svg)](https://search.maven.org/search?q=a:repatch-github_2.13)
+[![Scaladoc](https://javadoc.io/badge2/com.eed3si9n/repatch-github_2.13/javadoc.svg?label=Scaladoc)](https://javadoc.io/doc/com.eed3si9n/repatch-github_2.13)
 
 this is a dispatch plugin for github API v3.
+
+Published as: `"com.eed3si9n" %% "repatch-github" % <version>`
 
 repatch-github is licensed under Apache License v2.
 
