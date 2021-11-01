@@ -9,6 +9,7 @@ ThisBuild / version := s"dispatch${(ThisBuild / dispatchVersion).value}_${baseVe
 ThisBuild / crossScalaVersions := Seq(scala212, scala213)
 ThisBuild / scalaVersion := (ThisBuild / crossScalaVersions).value.last
 ThisBuild / organization := "com.eed3si9n"
+ThisBuild / logBuffered := false
 
 lazy val root = (project in file("."))
   .aggregate(core)
@@ -23,6 +24,7 @@ lazy val core = (project in file("core"))
     libraryDependencies ++= Seq(
       "org.dispatchhttp" %% "dispatch-core" % dispatchVersion.value,
       "org.dispatchhttp" %% "dispatch-json4s-native" % dispatchVersion.value,
+      "ch.qos.logback" % "logback-classic" % "1.2.6" % Test,
       "org.specs2" %% "specs2-core" % specsVersion % Test,
       "javax.xml.bind" % "jaxb-api" % "2.3.0", // For java11
     ),
