@@ -9,3 +9,7 @@ final case class OAuthClient(token: String, mimes: Seq[MediaType])
     super.httpHeaders ++ Map("Authorization" -> "bearer %s".format(token))
   def mime(ms: Seq[MediaType]): OAuthClient = copy(mimes = ms)
 }
+
+object OAuthClient {
+  def apply(token: String): OAuthClient = OAuthClient(token, MediaType.default)
+}
